@@ -6,8 +6,6 @@ import { getUserId } from '../utils.mjs'
 import { saveImgUrl } from '../../dataLayer/todos.mjs'
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { APIGatewayProxyEvent } from 'aws-lambda'
-import { createAttachmentPresignedUrl } from '../../helpers/attachmentUtils'
 
 const bucketName = process.env.ATTACHMENTS_S3_BUCKET
 const urlExpiration = Number(process.env.SIGNED_URL_EXPIRATION)
@@ -21,7 +19,7 @@ export const handler = middy()
       credentials: true
     })
   )
-  .handler(async (event : APIGatewayProxyEvent) => {
+  .handler(async (event ) => {
     const todoId = event.pathParameters.todoId
 
     logger.info('Generating upload URL:', {
@@ -29,9 +27,8 @@ export const handler = middy()
       bucketName
     })
     const userId = getUserId(event)
-    //const command = new PutObjectCommand({Bucket: bucketName, Key: todoId });
-    //const uploadUrl = await getSignedUrl(client, command, { expiresIn: urlExpiration })
-    const uploadUrl = await createAttachmentPresignedUrl(todoId, userId)
+    const command = new PutObjectCommand({Bucket: bucketName, Key: todoId });
+    const uploadUrl = await getSignedUrl(client, command, { expiresIn: urlExpiration })
     logger.info('Generating upload URL:', {
       todoId,
       uploadUrl

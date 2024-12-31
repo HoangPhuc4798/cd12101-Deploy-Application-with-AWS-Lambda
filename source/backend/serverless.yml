@@ -20,6 +20,8 @@ package:
 #     sourcemap: true  # Optional: Generate source maps
 build:
   esbuild: false
+  exclude: []
+
 provider:
   name: aws
   runtime: nodejs18.x
@@ -84,7 +86,10 @@ custom:
       - name: UpdateTodoModel
         contentType: application/json
         schema: ${file(models/update-todo-model.json)}
-
+  esbuild:
+    bundle: true
+    minify: false
+    exclude: []
 functions:
 
   Auth:

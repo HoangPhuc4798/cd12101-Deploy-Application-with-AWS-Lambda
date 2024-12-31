@@ -2,8 +2,7 @@ import middy from '@middy/core'
 import cors from '@middy/http-cors'
 import httpErrorHandler from '@middy/http-error-handler'
 import { getUserId } from '../utils.mjs'
-import { createTodoLogic } from '../../businessLogic/todos.mjs'
-import { APIGatewayProxyEvent } from 'aws-lambda'
+import { deleteTodoLogic } from '../../businessLogic/todos.mjs'
 
 export const handler = middy()
   .use(httpErrorHandler())
@@ -12,17 +11,17 @@ export const handler = middy()
       credentials: true
     })
   )
-  .handler(async (event: APIGatewayProxyEvent) => {
-    const newTodo = JSON.parse(event.body)
-    console.log(newTodo)
+  .handler(async (event) => {
+    const todoId = event.pathParameters.todoId
     const userId = getUserId(event)
-    const todo = await createTodoLogic(userId, newTodo)
-    const response = { item: todo };
+
+    await deleteTodoLogic(userId, todoId)
+
     return {
-      statusCode: 201,
+      statusCode: 202,
       headers: {
         'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify(response)
+      body: JSON.stringify({})
     }
   })

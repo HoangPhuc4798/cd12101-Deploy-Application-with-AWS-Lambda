@@ -3,7 +3,7 @@ import cors from '@middy/http-cors'
 import httpErrorHandler from '@middy/http-error-handler'
 import { getUserId } from '../utils.mjs'
 import { updateTodoLogic } from '../../businessLogic/todos.mjs'
-import { APIGatewayProxyEvent } from 'aws-lambda'
+//import { APIGatewayProxyEvent } from 'aws-lambda'
 
 export const handler = middy()
   .use(httpErrorHandler())
@@ -12,7 +12,7 @@ export const handler = middy()
       credentials: true
     })
   )
-  .handler(async (event: APIGatewayProxyEvent) => {
+  .handler(async (event) => {
     const todoId = event.pathParameters.todoId
     const updatedTodo = JSON.parse(event.body)
     const userId = getUserId(event)
