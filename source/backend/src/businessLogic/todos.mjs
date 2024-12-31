@@ -31,3 +31,9 @@ export const updateTodoLogic = async (
 export const deleteTodoLogic = async (userId, todoId) => {
   return deleteTodo(userId, todoId)
 }
+
+export async function addAttachmentUrl(bucketName, todoId, userId) {
+  const attachmentUrl = `https://${bucketName}.s3.amazonaws.com/${todoId}`
+
+  await todo.updateTodoAttachment(todoId, userId, attachmentUrl)
+}
